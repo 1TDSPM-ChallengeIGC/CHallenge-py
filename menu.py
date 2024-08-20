@@ -1,8 +1,8 @@
 print("Inicio do programa")
 
+# Listas para armazenar os dados
 lista_usuario = []
 lista_mecanico = []
-
 
 def menu():
     return """
@@ -19,61 +19,63 @@ def menu():
 --------------------------------
 """
 
-
 def continuar():
-    e = True
-    while e == True:
-        print("---------------------------------------------")
+    while True:
         print("Gostaria de voltar ao menu principal? (S/N)")
-        voltar_usu = input().upper()[0]
+        voltar_usu = input().upper().strip()
         if voltar_usu == "S":
-            e = False
-            executando = True
+            return True
         elif voltar_usu == "N":
             print("Até Breve!")
-            e = False
-            executando = False
+            return False
         else:
-            print("Por favor digite S para (Sim) ou N para (Não)!")
-    return executando
+            print("Por favor, digite S para (Sim) ou N para (Não)!")
 
+def validar_entrada(prompt, tipo=str):
+    while True:
+        try:
+            valor = tipo(input(prompt).strip())
+            if tipo == str and valor == "":
+                raise ValueError("A entrada não pode ser vazia.")
+            return valor
+        except ValueError as ve:
+            print(f"Erro: {ve}. Tente novamente.")
 
 def cadastro_usuario():
-    print(frase,"Cadastrar Usuario!")
-    nome = input("Informe seu nome: ")
-    email = input("Informe o seu email: ")
-    placa = input("Informe sua placa: ")
-    print(f"Parábens {nome}, você e seu carro {placa} estão cadastrados no nosso sistema!")
-    d_usu = {"nome": nome, "email": email, "placa": placa}
-    return d_usu
-
+    print("Cadastrar Usuario!")
+    nome = validar_entrada("Informe seu nome: ")
+    email = validar_entrada("Informe o seu email: ")
+    placa = validar_entrada("Informe sua placa: ")
+    print(f"Parabéns {nome}, você e seu carro {placa} estão cadastrados no nosso sistema!")
+    return {"nome": nome, "email": email, "placa": placa}
 
 def cadastro_mecanico():
-    print(frase,"Cadastrar Mecânico!")
-    nome_mec = input("Informe o nome do mecânico: ")
-    email_mec = input("Informe o email do mecânico: ")
-    salario_mec = float(input("Informe o sálario do mecânico: "))
-    print(f"Bem vindo {nome_mec}, e seu sálario mensal será de R$ {salario_mec}")
-    d_mec = {"nome": nome_mec, "email": email_mec, "salario": salario_mec}
-    return d_mec
+    print("Cadastrar Mecânico!")
+    nome_mec = validar_entrada("Informe o nome do mecânico: ")
+    email_mec = validar_entrada("Informe o email do mecânico: ")
+    salario_mec = validar_entrada("Informe o sálario do mecânico: ", float)
+    print(f"Bem-vindo {nome_mec}, e seu salário mensal será de R$ {salario_mec:.2f}")
+    return {"nome": nome_mec, "email": email_mec, "salario": salario_mec}
 
+def listar_dados(lista, tipo):
+    if lista:
+        for item in lista:
+            print(item)
+            print("-" * 50)
+    else:
+        print(f"Nenhum {tipo} cadastrado.")
+    input("Aperte <ENTER> para continuar")
 
 def quem_somos():
-    print(frase,"Quem Somos!")
+    print("Quem Somos!")
     print("Somos:\nGuilherme R\nIgor\nCristian\nE iremos mudar o mundo!!")
 
-
 def help():
-    print(frase,"Help!")
-    print("Você está com dificuldades de acessar a página? (S/N) ")
-    pergunta = input().upper()[0]
+    print("Help!")
+    pergunta = input("Você está com dificuldades de acessar a página? (S/N) ").upper().strip()
     if pergunta == "S":
         print("Tente atualizar a página ou ligue para nossos serviços humanos, tel: (11) 3687-3779")
-        executando = continuar()
-    elif pergunta == "N":
-        executando = continuar()
-    return executando
-
+    return continuar()
 
 def menu_chat():
     return """
@@ -91,92 +93,63 @@ def menu_chat():
 --------------------------------
 """
 
-
 def continuar_problemas():
-    print("-"*50)
-    print("Gostaria de voltar ao menu de problemas? (S/N)")
-    voltar = input().upper()
-    if voltar == "N":
-        executando_chat = False
-    elif voltar == "S":
-        executando_chat = True
-    return executando_chat
-
+    while True:
+        voltar = input("Gostaria de voltar ao menu de problemas? (S/N) ").upper().strip()
+        if voltar == "S":
+            return True
+        elif voltar == "N":
+            return False
+        else:
+            print("Por favor, digite S para (Sim) ou N para (Não)!")
 
 def p_superaquecimento():
-    print("-----------------------------------------------")
-    print("Se o carro estiver superaquecendo, pare imediatamente, desligue o motor e deixe esfriar.\nVerifique o nível do líquido de arrefecimento e procure por vazamentos.")
-    print("-----------------------------------------------")
+    print("Se o carro estiver superaquecendo, pare imediatamente, desligue o motor e deixe esfriar.")
+    print("Verifique o nível do líquido de arrefecimento e procure por vazamentos.")
     return continuar_problemas()
-
 
 def p_eletrico():
-    print("-----------------------------------------------")
-    print("Em caso de pane elétrica no carro, verifique os fusíveis e conexões elétricas.\nSe necessário, chame um eletricista automotivo qualificado para diagnosticar e corrigir o problema.")
-    print("-----------------------------------------------")
+    print("Em caso de pane elétrica no carro, verifique os fusíveis e conexões elétricas.")
+    print("Se necessário, chame um eletricista automotivo qualificado para diagnosticar e corrigir o problema.")
     return continuar_problemas()
-
 
 def p_bateria():
-    print("-----------------------------------------------")
-    print("Se a bateria do carro estiver ruim, tente dar uma carga com cabos auxiliares ou um carregador portátil.\nSe não resolver, substitua por uma nova ou chame um serviço de assistência para fazer isso.")
-    print("-----------------------------------------------")
+    print("Se a bateria do carro estiver ruim, tente dar uma carga com cabos auxiliares ou um carregador portátil.")
+    print("Se não resolver, substitua por uma nova ou chame um serviço de assistência para fazer isso.")
     return continuar_problemas()
-
 
 def p_falt_compus():
-    print("-----------------------------------------------")
-    print("Se estiver sem combustível, pare o carro em local seguro.\nSe possível, peça ajuda para trazer combustível. Se não, chame um serviço de assistência para reabastecer ou providenciar uma solução.")
-    print("-----------------------------------------------")
+    print("Se estiver sem combustível, pare o carro em local seguro.")
+    print("Se possível, peça ajuda para trazer combustível. Se não, chame um serviço de assistência.")
     return continuar_problemas()
-
 
 def p_trepidando():
-    print("-----------------------------------------------")
-    print("Se o carro estiver trepidando, verifique as rodas quanto a danos ou desequilíbrio.\nSe necessário, ajuste a pressão dos pneus.\nSe o problema persistir, pode ser necessário verificar os freios ou a suspensão com um mecânico.")
-    print("-----------------------------------------------")
+    print("Se o carro estiver trepidando, verifique as rodas quanto a danos ou desequilíbrio.")
+    print("Se necessário, ajuste a pressão dos pneus. Verifique os freios ou a suspensão se necessário.")
     return continuar_problemas()
-
 
 def p_pneu():
-    print("-----------------------------------------------")
-    print("Se tiver um pneu furado, estacione em local seguro.\nTroque o pneu utilizando o macaco e a chave de roda, ou chame um serviço de assistência para trocar o pneu por você.")
-    print("-----------------------------------------------")
+    print("Se tiver um pneu furado, estacione em local seguro.")
+    print("Troque o pneu ou chame um serviço de assistência para fazer isso por você.")
     return continuar_problemas()
-
 
 def p_dentada():
-    print("-----------------------------------------------")
-    print("Se a correia dentada quebrar, pare o carro imediatamente para evitar danos ao motor.\nChame um serviço de reboque para levar o veículo a uma oficina mecânica para substituir a correia e verificar se há danos adicionais no motor.")
-    print("-----------------------------------------------")
+    print("Se a correia dentada quebrar, pare o carro imediatamente para evitar danos ao motor.")
+    print("Chame um serviço de reboque para levar o veículo a uma oficina mecânica.")
     return continuar_problemas()
-
 
 def p_cambio():
-    print("-----------------------------------------------")
-    print("Se enfrentar problemas de câmbio, estacione com segurança.\nVerifique o nível de fluido de transmissão e procure sinais de vazamento.\nSe persistir, consulte um mecânico qualificado para diagnosticar e reparar o câmbio.")
-    print("-----------------------------------------------")
+    print("Se enfrentar problemas de câmbio, estacione com segurança.")
+    print("Verifique o nível de fluido de transmissão e procure sinais de vazamento.")
+    print("Se persistir, consulte um mecânico qualificado.")
     return continuar_problemas()
-
-
-def sair():
-    print("Até Breve!")
-    return False
-
-
-def invalido():
-    print("Opção Inválida, digite um dos números do Menu.")
-    print("Aperte <ENTER> para continuar")
-    input()
-
 
 def funcao_menu_problemas():
     executando_chat = True
     while executando_chat:
-        print(frase,"ChatBot!")
-        # Segundo menu de chatbot criado
+        print("ChatBot!")
         print(menu_chat())
-        problema = input("Por favor me informe o problema no seu carro: ").upper()
+        problema = input("Por favor me informe o problema no seu carro: ").upper().strip()
         if problema == "S":
             executando_chat = p_superaquecimento()
         elif problema == "E":
@@ -198,34 +171,19 @@ def funcao_menu_problemas():
         else:
             print("Valor inválido, por favor digitar o que está entre ().")
 
+def sair():
+    print("Até Breve!")
+    return False
 
-def listar_usu(lista_usuario):
-    indice = 0
-    while indice < len(lista_usuario):
-        print(lista_usuario[indice])
-        print("-"*50)
-        indice = indice + 1
-    print("Aperte <ENTER> para continuar")
-    input()
-
-
-def listar_mec(lista_mecanico):
-    indice = 0
-    while indice < len(lista_mecanico):
-        print(lista_mecanico[indice])
-        print("-"*50)
-        indice = indice + 1
-    print("Aperte <ENTER> para continuar")
-    input()
-
+def invalido():
+    print("Opção Inválida, digite um dos números do Menu.")
+    input("Aperte <ENTER> para continuar")
 
 # Iniciando programa
 executando = True
 while executando:
-    frase = "Bem-vindo ao "
     print(menu())
-    # Criando o menu ultilizando laços e if e else
-    opcao = input("Digite a letra entre () da opcão desejada: ").upper()[0]
+    opcao = input("Digite a letra entre () da opcão desejada: ").upper().strip()
     if opcao == "U":
         lista_usuario.append(cadastro_usuario())
         executando = continuar()
@@ -233,14 +191,14 @@ while executando:
         lista_mecanico.append(cadastro_mecanico())
         executando = continuar()
     elif opcao == "L":
-        listar_usu(lista_usuario)
+        listar_dados(lista_usuario, "usuário")
     elif opcao == "I":
-        listar_mec(lista_mecanico)
+        listar_dados(lista_mecanico, "mecânico")
     elif opcao == "Q":
         quem_somos()
         executando = continuar()
     elif opcao == "H":
-            executando = help()
+        executando = help()
     elif opcao == "C":
         funcao_menu_problemas()
         executando = continuar()
@@ -248,5 +206,5 @@ while executando:
         executando = sair()
     else:
         invalido()
-# Finalizando programa
+
 print("Fim do Programa!")
