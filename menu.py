@@ -1,6 +1,6 @@
 print("Inicio do programa")
 
-# Listas para armazenar os dados
+
 lista_usuario = []
 lista_mecanico = []
 
@@ -179,7 +179,7 @@ def invalido():
     print("Opção Inválida, digite um dos números do Menu.")
     input("Aperte <ENTER> para continuar")
 
-# Iniciando programa
+
 executando = True
 while executando:
     print(menu())
