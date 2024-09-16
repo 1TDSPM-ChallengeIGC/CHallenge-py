@@ -1,6 +1,5 @@
 print("Inicio do programa")
 
-
 lista_usuario = []
 lista_mecanico = []
 
@@ -12,6 +11,8 @@ def menu():
     - (M)ecânico Cadastrar
     - (L)istar Usuarios Cadastrados
     - L(I)star Mecanicos Cadastrados
+    - (A)tualizar Usuario/Mecanico
+    - (E)xcluir Usuario/Mecanico
     - (Q)uem Somos
     - (H)elp
     - (C)hatBot
@@ -51,17 +52,60 @@ def cadastro_usuario():
 
 def cadastro_mecanico():
     print("Cadastrar Mecânico!")
-    nome_mec = validar_entrada("Informe o nome do mecânico: ")
-    email_mec = validar_entrada("Informe o email do mecânico: ")
-    salario_mec = validar_entrada("Informe o sálario do mecânico: ", float)
+    nome_mec = input("Informe o nome do mecânico: ")
+    email_mec = input("Informe o email do mecânico: ")
+
+    while True:
+        try:
+            salario_mec = float(input("Informe o sálario do mecânico: "))
+            break
+        except ValueError:
+            print("Por favor, insira um valor numérico válido para o salário.")
+    
     print(f"Bem-vindo {nome_mec}, e seu salário mensal será de R$ {salario_mec:.2f}")
-    return {"nome": nome_mec, "email": email_mec, "salario": salario_mec}
+    d_mec = {"nome": nome_mec, "email": email_mec, "salario": salario_mec}
+    return d_mec
 
 def listar_dados(lista, tipo):
     if lista:
-        for item in lista:
-            print(item)
+        for idx, item in enumerate(lista):
+            print(f"{idx+1} - {item}")
             print("-" * 50)
+    else:
+        print(f"Nenhum {tipo} cadastrado.")
+    input("Aperte <ENTER> para continuar")
+
+def atualizar_dados(lista, tipo):
+    listar_dados(lista, tipo)
+    if lista:
+        try:
+            indice = int(validar_entrada(f"Informe o número do {tipo} que deseja atualizar: ", int)) - 1
+            if 0 <= indice < len(lista):
+                if tipo == "usuário":
+                    lista[indice] = cadastro_usuario()
+                else:
+                    lista[indice] = cadastro_mecanico()
+                print(f"{tipo.capitalize()} atualizado com sucesso!")
+            else:
+                print(f"{tipo.capitalize()} não encontrado.")
+        except ValueError:
+            print("Erro! Informe um número válido.")
+    else:
+        print(f"Nenhum {tipo} cadastrado.")
+    input("Aperte <ENTER> para continuar")
+
+def excluir_dados(lista, tipo):
+    listar_dados(lista, tipo)
+    if lista:
+        try:
+            indice = int(validar_entrada(f"Informe o número do {tipo} que deseja excluir: ", int)) - 1
+            if 0 <= indice < len(lista):
+                excluido = lista.pop(indice)
+                print(f"{tipo.capitalize()} {excluido['nome']} excluído com sucesso!")
+            else:
+                print(f"{tipo.capitalize()} não encontrado.")
+        except ValueError:
+            print("Erro! Informe um número válido.")
     else:
         print(f"Nenhum {tipo} cadastrado.")
     input("Aperte <ENTER> para continuar")
@@ -77,100 +121,6 @@ def help():
         print("Tente atualizar a página ou ligue para nossos serviços humanos, tel: (11) 3687-3779")
     return continuar()
 
-def menu_chat():
-    return """
---------------------------------
- M E N U - D E - P R O B L E M A S \n
- - (S)uperaquecimento
- - Pane (E)létrica
- - (B)ateria
- - (F)alta de Combustível
- - Carro (T)repidando
- - (P)neus Furados
- - Correia (D)entada
- - Problemas no (C)âmbio
- - (V)oltar
---------------------------------
-"""
-
-def continuar_problemas():
-    while True:
-        voltar = input("Gostaria de voltar ao menu de problemas? (S/N) ").upper().strip()
-        if voltar == "S":
-            return True
-        elif voltar == "N":
-            return False
-        else:
-            print("Por favor, digite S para (Sim) ou N para (Não)!")
-
-def p_superaquecimento():
-    print("Se o carro estiver superaquecendo, pare imediatamente, desligue o motor e deixe esfriar.")
-    print("Verifique o nível do líquido de arrefecimento e procure por vazamentos.")
-    return continuar_problemas()
-
-def p_eletrico():
-    print("Em caso de pane elétrica no carro, verifique os fusíveis e conexões elétricas.")
-    print("Se necessário, chame um eletricista automotivo qualificado para diagnosticar e corrigir o problema.")
-    return continuar_problemas()
-
-def p_bateria():
-    print("Se a bateria do carro estiver ruim, tente dar uma carga com cabos auxiliares ou um carregador portátil.")
-    print("Se não resolver, substitua por uma nova ou chame um serviço de assistência para fazer isso.")
-    return continuar_problemas()
-
-def p_falt_compus():
-    print("Se estiver sem combustível, pare o carro em local seguro.")
-    print("Se possível, peça ajuda para trazer combustível. Se não, chame um serviço de assistência.")
-    return continuar_problemas()
-
-def p_trepidando():
-    print("Se o carro estiver trepidando, verifique as rodas quanto a danos ou desequilíbrio.")
-    print("Se necessário, ajuste a pressão dos pneus. Verifique os freios ou a suspensão se necessário.")
-    return continuar_problemas()
-
-def p_pneu():
-    print("Se tiver um pneu furado, estacione em local seguro.")
-    print("Troque o pneu ou chame um serviço de assistência para fazer isso por você.")
-    return continuar_problemas()
-
-def p_dentada():
-    print("Se a correia dentada quebrar, pare o carro imediatamente para evitar danos ao motor.")
-    print("Chame um serviço de reboque para levar o veículo a uma oficina mecânica.")
-    return continuar_problemas()
-
-def p_cambio():
-    print("Se enfrentar problemas de câmbio, estacione com segurança.")
-    print("Verifique o nível de fluido de transmissão e procure sinais de vazamento.")
-    print("Se persistir, consulte um mecânico qualificado.")
-    return continuar_problemas()
-
-def funcao_menu_problemas():
-    executando_chat = True
-    while executando_chat:
-        print("ChatBot!")
-        print(menu_chat())
-        problema = input("Por favor me informe o problema no seu carro: ").upper().strip()
-        if problema == "S":
-            executando_chat = p_superaquecimento()
-        elif problema == "E":
-            executando_chat = p_eletrico()
-        elif problema == "B":
-            executando_chat = p_bateria()
-        elif problema == "F":
-            executando_chat = p_falt_compus()
-        elif problema == "T":
-            executando_chat = p_trepidando()
-        elif problema == "P":
-            executando_chat = p_pneu()
-        elif problema == "D":
-            executando_chat = p_dentada()
-        elif problema == "C":
-            executando_chat = p_cambio()
-        elif problema == "V":
-            break
-        else:
-            print("Valor inválido, por favor digitar o que está entre ().")
-
 def sair():
     print("Até Breve!")
     return False
@@ -178,7 +128,6 @@ def sair():
 def invalido():
     print("Opção Inválida, digite um dos números do Menu.")
     input("Aperte <ENTER> para continuar")
-
 
 executando = True
 while executando:
@@ -194,14 +143,29 @@ while executando:
         listar_dados(lista_usuario, "usuário")
     elif opcao == "I":
         listar_dados(lista_mecanico, "mecânico")
+    elif opcao == "A":
+        sub_opcao = input("Deseja atualizar (U)suario ou (M)ecânico? ").upper().strip()
+        if sub_opcao == "U":
+            atualizar_dados(lista_usuario, "usuário")
+        elif sub_opcao == "M":
+            atualizar_dados(lista_mecanico, "mecânico")
+        else:
+            invalido()
+        executando = continuar()
+    elif opcao == "E":
+        sub_opcao = input("Deseja excluir (U)suario ou (M)ecânico? ").upper().strip()
+        if sub_opcao == "U":
+            excluir_dados(lista_usuario, "usuário")
+        elif sub_opcao == "M":
+            excluir_dados(lista_mecanico, "mecânico")
+        else:
+            invalido()
+        executando = continuar()
     elif opcao == "Q":
         quem_somos()
         executando = continuar()
     elif opcao == "H":
         executando = help()
-    elif opcao == "C":
-        funcao_menu_problemas()
-        executando = continuar()
     elif opcao == "S":
         executando = sair()
     else:
