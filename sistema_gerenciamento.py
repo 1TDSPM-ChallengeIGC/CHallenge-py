@@ -1,4 +1,3 @@
-# sistema_gerenciamento.py
 from conexao_db import ConexaoDB
 from crud import CRUD
 

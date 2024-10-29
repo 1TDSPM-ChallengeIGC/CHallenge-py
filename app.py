@@ -1,4 +1,4 @@
-# app.py
+
 from flask import Flask, request, jsonify
 from sistema_gerenciamento import SistemaGerenciamento
 

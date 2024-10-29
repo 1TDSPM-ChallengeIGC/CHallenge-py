@@ -23,9 +23,9 @@ class ConexaoDB:
             raise
 
     def connect(self):
-        # Estabelece a conexão com o banco de dados.
+        
         try:
-            # Usando um dicionário para passar as credenciais
+            
             self.connection = oracledb.connect(user=self.user, password=self.password, dsn=self.connection_string)
             print("Conexão estabelecida com sucesso!")
         except oracledb.DatabaseError as e:
@@ -33,20 +33,20 @@ class ConexaoDB:
             raise
 
     def close(self):
-        # Fecha a conexão com o banco de dados.
+        
         if self.connection:
             self.connection.close()
             print("Conexão fechada.")
 
     def executar_query(self, query, parametros=None):
-        # Executa uma consulta e retorna os resultados.
+        
         with self.connection.cursor() as cursor:
             cursor.execute(query, parametros or [])
             resultados = cursor.fetchall()
             return resultados
 
     def executar_insert_update_delete(self, query, parametros=None):
-        # Executa operações de inserção, atualização ou exclusão.
+        
         with self.connection.cursor() as cursor:
             cursor.execute(query, parametros or [])
             self.connection.commit()

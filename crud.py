@@ -1,6 +1,6 @@
-# crud.py
+
 import json
-import requests  # Certifique-se de ter requests instalado: pip install requests
+import requests  
 
 class CRUD:
     def __init__(self, conexao):
