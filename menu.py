@@ -4,6 +4,7 @@ print("Bem-vindo ao sistema de gerenciamento de usuários e mecânicos!")
 
 lista_usuario = []
 lista_mecanico = []
+lista_carro = []
 
 def menu():
     return """
@@ -12,8 +13,10 @@ def menu():
 --------------------------------
     - (U)suario Cadastrar
     - (M)ecânico Cadastrar
+    - (C)adastrar Carro
     - (L)istar Usuarios Cadastrados
     - L(I)star Mecanicos Cadastrados
+    - L(A) Carros Cadastrados
     - (A)tualizar Usuario/Mecanico
     - (E)xcluir Usuario/Mecanico
     - (Q)uem Somos
@@ -61,17 +64,26 @@ def validar_placa(placa):
 def cadastro_usuario():
     print("Cadastro de Usuário")
     nome = validar_entrada("Nome: ")
-
+    
+    cpf = validar_entrada("CPF: ")
     email = validar_entrada("Email: ")
     while not validar_email(email):
         email = validar_entrada("Informe um email válido: ")
+    
+    print(f"Usuário {nome} com CPF {cpf} e e-mail {email} cadastrado com sucesso!")
+    return {"nome": nome, "cpf": cpf, "email": email}
 
+def cadastro_carro():
+    print("Cadastro de Carro")
     placa = validar_entrada("Placa do carro: ")
     while not validar_placa(placa):
         placa = validar_entrada("Informe uma placa válida: ")
-
-    print(f"Usuário {nome} e seu carro {placa} cadastrados com sucesso!")
-    return {"nome": nome, "email": email, "placa": placa}
+    
+    cor = validar_entrada("Cor do carro: ")
+    modelo = validar_entrada("Modelo do carro: ")
+    
+    print(f"Carro {modelo} de cor {cor} e placa {placa} cadastrado com sucesso!")
+    return {"placa": placa, "cor": cor, "modelo": modelo}
 
 def cadastro_mecanico():
     print("Cadastro de Mecânico")
@@ -109,7 +121,7 @@ def atualizar_dados(lista, tipo):
             if 0 <= indice < len(lista):
                 if tipo == "usuário":
                     lista[indice] = cadastro_usuario()
-                else:
+                elif tipo == "mecânico":
                     lista[indice] = cadastro_mecanico()
                 print(f"{tipo.capitalize()} atualizado com sucesso!")
             else:
@@ -169,10 +181,15 @@ while executando:
     elif opcao == "M":
         lista_mecanico.append(cadastro_mecanico())
         executando = continuar()
+    elif opcao == "C":
+        lista_carro.append(cadastro_carro())
+        executando = continuar()
     elif opcao == "L":
         listar_dados(lista_usuario, "usuário")
     elif opcao == "I":
         listar_dados(lista_mecanico, "mecânico")
+    elif opcao == "A":
+        listar_dados(lista_carro, "carro")
     elif opcao == "A":
         sub_opcao = input("Deseja atualizar (U)suario ou (M)ecânico? ").upper().strip()
         if sub_opcao == "U":
