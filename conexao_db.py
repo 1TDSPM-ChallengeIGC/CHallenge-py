@@ -1,9 +1,15 @@
 import json
 import oracledb
-
+import os
+ 
 class ConexaoDB:
-    def __init__(self, config_file='oracle_conn.json'):
+    def __init__(self, config_file = "C:/Users/crist/Desktop/CHallengepy/CHallenge-py/oracle_conn.json"
+):
         try:
+            # Verifica se o arquivo de configuração existe no caminho fornecido
+            if not os.path.exists(config_file):
+                raise FileNotFoundError(f"Erro: Arquivo '{config_file}' não encontrado.")
+           
             with open(config_file, 'r') as f:
                 config_list = json.load(f)
             config = config_list[0]
@@ -21,32 +27,28 @@ class ConexaoDB:
         except KeyError as e:
             print(f"Chave não encontrada no JSON: {e}")
             raise
-
+ 
     def connect(self):
-        
         try:
-            
             self.connection = oracledb.connect(user=self.user, password=self.password, dsn=self.connection_string)
             print("Conexão estabelecida com sucesso!")
         except oracledb.DatabaseError as e:
             print(f"Erro ao conectar ao banco de dados: {e}")
             raise
-
+ 
     def close(self):
-        
         if self.connection:
             self.connection.close()
             print("Conexão fechada.")
-
+ 
     def executar_query(self, query, parametros=None):
-        
         with self.connection.cursor() as cursor:
             cursor.execute(query, parametros or [])
             resultados = cursor.fetchall()
             return resultados
-
+ 
     def executar_insert_update_delete(self, query, parametros=None):
-        
         with self.connection.cursor() as cursor:
             cursor.execute(query, parametros or [])
             self.connection.commit()
+ 
