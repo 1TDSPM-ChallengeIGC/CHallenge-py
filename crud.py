@@ -1,4 +1,3 @@
-from conexao_db import ConexaoDB
 import json
 
 class CRUD:
@@ -6,92 +5,42 @@ class CRUD:
         self.conexao = conexao
 
     def inserir_cliente(self, nome, cpf, email, tel):
-        try:
-            with self.conexao.cursor() as cursor:
-                cursor.execute("""
-                    INSERT INTO cliente (nome, cpf, email, tel)
-                    VALUES (:nome, :cpf, :email, :tel)
-                """, {'nome': nome, 'cpf': cpf, 'email': email, 'tel': tel})
-                self.conexao.commit()
-                print("Cliente inserido com sucesso.")
-        except Exception as e:
-            print(f"Erro ao inserir cliente: {e}")
+        query = "INSERT INTO cliente (cpf_clie, nome_clie, email_clie, tel_clie) VALUES (:1, :2, :3, :4)"
+        self.conexao.executar_insert_update_delete(query, [cpf, nome, email, tel])
+        print("Cliente inserido com sucesso.")
 
     def consultar_clientes(self):
-        try:
-            with self.conexao.cursor() as cursor:
-                cursor.execute("SELECT * FROM cliente")
-                return cursor.fetchall()
-        except Exception as e:
-            print(f"Erro ao consultar clientes: {e}")
-            return []
+        query = "SELECT * FROM cliente"
+        return self.conexao.executar_query(query)
 
-    def atualizar_cliente(self, cpf_clie, nome, email, tel):
-        try:
-            with self.conexao.cursor() as cursor:
-                cursor.execute("""
-                    UPDATE cliente
-                    SET nome = :nome, email = :email, tel = :tel
-                    WHERE cpf = :cpf
-                """, {'nome': nome, 'email': email, 'tel': tel, 'cpf': cpf_clie})
-                self.conexao.commit()
-                print("Cliente atualizado com sucesso.")
-        except Exception as e:
-            print(f"Erro ao atualizar cliente: {e}")
+    def atualizar_cliente(self, cpf_clie, nome=None, email=None, tel=None):
+        query = "UPDATE cliente SET nome_clie = :1, email_clie = :2, tel_clie = :3 WHERE cpf_clie = :4"
+        self.conexao.executar_insert_update_delete(query, [nome, email, tel, cpf_clie])
+        print("Cliente atualizado com sucesso.")
 
     def excluir_cliente(self, cpf_clie):
-        try:
-            # Verifica se existem carros ou guinchos associados ao cliente
-            if self.cliente_tem_carros(cpf_clie):
-                self.excluir_carros(cpf_clie)
-            if self.cliente_tem_guinchos(cpf_clie):
-                self.excluir_guinchos(cpf_clie)
+        # Verifica se existem registros relacionados na tabela 'guincho' ou 'carro'
+        if self.verificar_registros_relacionados(cpf_clie):
+            print("Não é possível excluir o cliente. Existem registros relacionados nas tabelas 'guincho' ou 'carro'.")
+            return
 
-            with self.conexao.cursor() as cursor:
-                cursor.execute("DELETE FROM cliente WHERE cpf = :cpf", {'cpf': cpf_clie})
-                self.conexao.commit()
-                print("Cliente excluído com sucesso.")
-        except Exception as e:
-            print(f"Erro ao excluir cliente: {e}")
+        query = "DELETE FROM cliente WHERE cpf_clie = :1"
+        self.conexao.executar_insert_update_delete(query, [cpf_clie])
+        print("Cliente excluído com sucesso.")
 
-    def exportar_clientes_json(self):
+    def verificar_registros_relacionados(self, cpf_clie):
+        # Verifique o nome correto da coluna nas tabelas 'guincho' e 'carro'
+        query_guincho = "SELECT COUNT(*) FROM guincho WHERE cpf_clie = :1"
+        resultado_guincho = self.conexao.executar_query(query_guincho, [cpf_clie])
+
+        query_carro = "SELECT COUNT(*) FROM carro WHERE cpf_clie = :1"
+        resultado_carro = self.conexao.executar_query(query_carro, [cpf_clie])
+
+        # Retorna True se houver registros relacionados em qualquer uma das tabelas
+        return resultado_guincho[0][0] > 0 or resultado_carro[0][0] > 0
+
+    def exportar_clientes_json(self, file_path="clientes.json"):
         clientes = self.consultar_clientes()
-        with open('clientes.json', 'w') as arquivo_json:
-            json.dump(clientes, arquivo_json, default=str)
-            print("Dados dos clientes exportados para clientes.json.")
-
-    def cliente_tem_carros(self, cpf_clie):
-        try:
-            with self.conexao.cursor() as cursor:
-                cursor.execute("SELECT COUNT(*) FROM carro WHERE cpf_clie = :cpf", {'cpf': cpf_clie})
-                return cursor.fetchone()[0] > 0
-        except Exception as e:
-            print(f"Erro ao verificar carros do cliente: {e}")
-            return False
-
-    def cliente_tem_guinchos(self, cpf_clie):
-        try:
-            with self.conexao.cursor() as cursor:
-                cursor.execute("SELECT COUNT(*) FROM guincho WHERE cpf_clie = :cpf", {'cpf': cpf_clie})
-                return cursor.fetchone()[0] > 0
-        except Exception as e:
-            print(f"Erro ao verificar guinchos do cliente: {e}")
-            return False
-
-    def excluir_carros(self, cpf_clie):
-        try:
-            with self.conexao.cursor() as cursor:
-                cursor.execute("DELETE FROM carro WHERE cpf_clie = :cpf", {'cpf': cpf_clie})
-                self.conexao.commit()
-                print("Carros do cliente excluídos com sucesso.")
-        except Exception as e:
-            print(f"Erro ao excluir carros do cliente: {e}")
-
-    def excluir_guinchos(self, cpf_clie):
-        try:
-            with self.conexao.cursor() as cursor:
-                cursor.execute("DELETE FROM guincho WHERE cpf_clie = :cpf", {'cpf': cpf_clie})
-                self.conexao.commit()
-                print("Guinchos do cliente excluídos com sucesso.")
-        except Exception as e:
-            print(f"Erro ao excluir guinchos do cliente: {e}")
+        with open(file_path, 'w') as f:
+            json.dump(clientes, f)
+        print(f"Dados exportados para {file_path}")
