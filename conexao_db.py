@@ -1,12 +1,13 @@
 import json
 import oracledb
 import os
- 
+
 class ConexaoDB:
-    def __init__(self, config_file = "C:/Users/crist/Desktop/CHallengepy/CHallenge-py/oracle_conn.json"
-):
+    def __init__(self, config_file=None):
         try:
-            # Verifica se o arquivo de configuração existe no caminho fornecido
+            if not config_file:
+                base_dir = os.path.dirname(__file__)
+                config_file = os.path.join(base_dir, "oracle_conn.json")
             if not os.path.exists(config_file):
                 raise FileNotFoundError(f"Erro: Arquivo '{config_file}' não encontrado.")
            
@@ -18,14 +19,8 @@ class ConexaoDB:
             self.dsn = config['dsn']
             self.connection_string = self.dsn
             self.connection = None
-        except FileNotFoundError:
-            print(f"Arquivo não encontrado: {config_file}")
-            raise
-        except json.JSONDecodeError:
-            print("Erro ao decodificar o arquivo JSON.")
-            raise
-        except KeyError as e:
-            print(f"Chave não encontrada no JSON: {e}")
+        except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
+            print(f"Erro ao carregar configurações: {e}")
             raise
  
     def connect(self):
@@ -51,4 +46,32 @@ class ConexaoDB:
         with self.connection.cursor() as cursor:
             cursor.execute(query, parametros or [])
             self.connection.commit()
- 
+
+class CrudCliente:
+    def __init__(self, conexao):
+        self.conexao = conexao
+
+    def excluir_cliente(self, cpf_cliente):
+        try:
+            self.conexao.connect()
+            with self.conexao.connection.cursor() as cursor:
+                # Exclui registros dependentes na tabela `guincho`
+                cursor.execute("DELETE FROM guincho WHERE cpf_cliente = :1", [cpf_cliente])
+                
+                # Exclui registros dependentes na tabela `carro`
+                cursor.execute("DELETE FROM carro WHERE cpf_cliente = :1", [cpf_cliente])
+                
+                # Exclui o cliente na tabela `cliente`
+                cursor.execute("DELETE FROM cliente WHERE cpf = :1", [cpf_cliente])
+                
+            self.conexao.connection.commit()
+            print(f"Cliente com CPF {cpf_cliente} e registros relacionados foram excluídos com sucesso.")
+        
+        except oracledb.IntegrityError as e:
+            print(f"Erro de integridade ao excluir cliente: {e}")
+            self.conexao.connection.rollback()
+        except Exception as e:
+            print(f"Ocorreu um erro ao tentar excluir o cliente: {e}")
+            self.conexao.connection.rollback()
+        finally:
+            self.conexao.close()
