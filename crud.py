@@ -1,3 +1,4 @@
+import re
 import json
 
 class CRUD:
@@ -19,9 +20,9 @@ class CRUD:
         print("Cliente atualizado com sucesso.")
 
     def excluir_cliente(self, cpf_clie):
-        # Verifica se existem registros relacionados na tabela 'guincho' ou 'carro'
+        # Verifica se existem registros relacionados na tabela 'guincho'
         if self.verificar_registros_relacionados(cpf_clie):
-            print("Não é possível excluir o cliente. Existem registros relacionados nas tabelas 'guincho' ou 'carro'.")
+            print("Não é possível excluir o cliente. Existem registros relacionados na tabela 'guincho'.")
             return
 
         query = "DELETE FROM cliente WHERE cpf_clie = :1"
@@ -29,18 +30,32 @@ class CRUD:
         print("Cliente excluído com sucesso.")
 
     def verificar_registros_relacionados(self, cpf_clie):
-        # Verifique o nome correto da coluna nas tabelas 'guincho' e 'carro'
-        query_guincho = "SELECT COUNT(*) FROM guincho WHERE cpf_clie = :1"
-        resultado_guincho = self.conexao.executar_query(query_guincho, [cpf_clie])
-
-        query_carro = "SELECT COUNT(*) FROM carro WHERE cpf_clie = :1"
-        resultado_carro = self.conexao.executar_query(query_carro, [cpf_clie])
-
-        # Retorna True se houver registros relacionados em qualquer uma das tabelas
-        return resultado_guincho[0][0] > 0 or resultado_carro[0][0] > 0
+        query = "SELECT COUNT(*) FROM guincho WHERE cpf_clie = :1"
+        resultado = self.conexao.executar_query(query, [cpf_clie])
+        return resultado[0][0] > 0  # Retorna True se houver registros relacionados
 
     def exportar_clientes_json(self, file_path="clientes.json"):
         clientes = self.consultar_clientes()
         with open(file_path, 'w') as f:
             json.dump(clientes, f)
         print(f"Dados exportados para {file_path}")
+
+    def validar_nome(self, nome):
+        if not nome or len(nome) < 3:
+            raise ValueError("O nome deve ter pelo menos 3 caracteres. Por favor, insira um nome válido.")
+        return True
+
+    def validar_cpf(self, cpf):
+        if not re.match(r'^\d{11}$', cpf):
+            raise ValueError("O CPF deve ter 11 dígitos numéricos. Por favor, insira um CPF válido.")
+        return True
+
+    def validar_email(self, email):
+        if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email):
+            raise ValueError("O e-mail inserido não é válido. Por favor, insira um e-mail válido.")
+        return True
+
+    def validar_telefone(self, telefone):
+        if not re.match(r'^\d{10,11}$', telefone):
+            raise ValueError("O telefone deve ter 10 ou 11 dígitos numéricos. Por favor, insira um telefone válido.")
+        return True

@@ -1,17 +1,16 @@
+from conexao_db import ConexaoDB
 from sistema_gerenciamento import SistemaGerenciamento
 
 def main():
-    sistema = SistemaGerenciamento()
     
+    conexao = ConexaoDB()
+    conexao.connect() 
+
     
-    sistema.conexao.connect()
-    
-    try:
-       
-        sistema.menu_principal()
-    finally:
-       
-        sistema.conexao.close()
+    sistema = SistemaGerenciamento(conexao)
+
+   
+    sistema.menu_principal()
 
 if __name__ == "__main__":
     main()
