@@ -1,4 +1,5 @@
 import json
+import requests
 from crud import CRUD
 
 class SistemaGerenciamento:
@@ -14,7 +15,8 @@ class SistemaGerenciamento:
             print("3. Atualizar Cliente")
             print("4. Excluir Cliente")
             print("5. Exportar Clientes")
-            print("6. Sair")
+            print("6. Consultar Usuários da API Externa")
+            print("7. Sair")
 
             opcao = input("Escolha uma opção: ")
 
@@ -29,6 +31,8 @@ class SistemaGerenciamento:
             elif opcao == "5":
                 self.exportar_clientes()
             elif opcao == "6":
+                self.consultar_usuarios_api()
+            elif opcao == "7":
                 self.conexao.close()
                 break
             else:
@@ -147,6 +151,22 @@ class SistemaGerenciamento:
                 print("Nenhum cliente encontrado com a letra informada. 😞")
         else:
             print("Opção inválida. Por favor, escolha novamente.")
+
+    def consultar_usuarios_api(self):
+        print("\nConsultando usuários da API externa... 🌐")
+        url = "https://jsonplaceholder.typicode.com/users"
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            usuarios = response.json()
+            print("\nUsuários encontrados na API:")
+            for usuario in usuarios:
+                print(f"Nome: {usuario['name']}")
+                print(f"Email: {usuario['email']}")
+                print(f"Telefone: {usuario['phone']}")
+                print("-" * 40)
+        else:
+            print("Erro ao acessar a API. Status code:", response.status_code)
 
     def salvar_json(self, dados, nome_arquivo):
         with open(nome_arquivo, 'w', encoding='utf-8') as f:
