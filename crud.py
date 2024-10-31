@@ -8,37 +8,41 @@ class CRUD:
     def inserir_cliente(self, nome, cpf, email, tel):
         query = "INSERT INTO cliente (cpf_clie, nome_clie, email_clie, tel_clie) VALUES (:1, :2, :3, :4)"
         self.conexao.executar_insert_update_delete(query, [cpf, nome, email, tel])
-        print("Cliente inserido com sucesso.")
+        print(f"Cliente '{nome}' inserido com sucesso! 🎉")
 
-    def consultar_clientes(self):
+    def consultar_clientes(self, cpf=None, nome=None):
         query = "SELECT * FROM cliente"
-        return self.conexao.executar_query(query)
+        parametros = []
+        
+        if cpf:
+            query += " WHERE cpf_clie = :1"
+            parametros.append(cpf)
+        elif nome:
+            query += " WHERE nome_clie LIKE :1"
+            parametros.append(f"%{nome}%")
+        
+        return self.conexao.executar_query(query, parametros)
 
     def atualizar_cliente(self, cpf_clie, nome=None, email=None, tel=None):
         query = "UPDATE cliente SET nome_clie = :1, email_clie = :2, tel_clie = :3 WHERE cpf_clie = :4"
         self.conexao.executar_insert_update_delete(query, [nome, email, tel, cpf_clie])
-        print("Cliente atualizado com sucesso.")
+        print(f"Cliente com CPF '{cpf_clie}' atualizado com sucesso! 👍")
 
-    def excluir_cliente(self, cpf_clie):
-        # Verifica se existem registros relacionados na tabela 'guincho'
-        if self.verificar_registros_relacionados(cpf_clie):
-            print("Não é possível excluir o cliente. Existem registros relacionados na tabela 'guincho'.")
-            return
-
-        query = "DELETE FROM cliente WHERE cpf_clie = :1"
-        self.conexao.executar_insert_update_delete(query, [cpf_clie])
-        print("Cliente excluído com sucesso.")
-
-    def verificar_registros_relacionados(self, cpf_clie):
-        query = "SELECT COUNT(*) FROM guincho WHERE cpf_clie = :1"
-        resultado = self.conexao.executar_query(query, [cpf_clie])
-        return resultado[0][0] > 0  # Retorna True se houver registros relacionados
+    def excluir_cliente(self, cpf_clie=None, nome_clie=None):
+        if cpf_clie:
+            query = "DELETE FROM cliente WHERE cpf_clie = :1"
+            self.conexao.executar_insert_update_delete(query, [cpf_clie])
+            print(f"Cliente com CPF '{cpf_clie}' excluído com sucesso. ❌")
+        elif nome_clie:
+            query = "DELETE FROM cliente WHERE nome_clie LIKE :1"
+            self.conexao.executar_insert_update_delete(query, [f"%{nome_clie}%"])
+            print(f"Clientes com o nome '{nome_clie}' excluídos com sucesso. ❌")
 
     def exportar_clientes_json(self, file_path="clientes.json"):
         clientes = self.consultar_clientes()
         with open(file_path, 'w') as f:
             json.dump(clientes, f)
-        print(f"Dados exportados para {file_path}")
+        print(f"Dados exportados com sucesso para {file_path}. 📥")
 
     def validar_nome(self, nome):
         if not nome or len(nome) < 3:

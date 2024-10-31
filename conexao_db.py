@@ -26,7 +26,7 @@ class ConexaoDB:
     def connect(self):
         try:
             self.connection = oracledb.connect(user=self.user, password=self.password, dsn=self.connection_string)
-            print("Conexão estabelecida com sucesso!")
+            print("Conexão estabelecida com sucesso! Vamos começar.")
         except oracledb.DatabaseError as e:
             print(f"Erro ao conectar ao banco de dados: {e}")
             raise
@@ -34,7 +34,7 @@ class ConexaoDB:
     def close(self):
         if self.connection:
             self.connection.close()
-            print("Conexão fechada.")
+            print("Conexão encerrada. Até a próxima!")
  
     def executar_query(self, query, parametros=None):
         with self.connection.cursor() as cursor:
