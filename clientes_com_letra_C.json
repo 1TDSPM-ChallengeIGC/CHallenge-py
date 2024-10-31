@@ -1,0 +1,32 @@
+[
+    {
+        "cpf": "45678901234",
+        "nome": "Ana Costa",
+        "email": "ana@gmail.com",
+        "telefone": "456789012"
+    },
+    {
+        "cpf": "56789012345",
+        "nome": "Carlos Oliveira",
+        "email": "carlos@gmail.com",
+        "telefone": "567890123"
+    },
+    {
+        "cpf": "89012345678",
+        "nome": "Camila Ferreira",
+        "email": "camila@gmail.com",
+        "telefone": "890123456"
+    },
+    {
+        "cpf": "44556677889",
+        "nome": "Tatiane Costa",
+        "email": "tatiane.costa@gmail.com",
+        "telefone": "4455667788"
+    },
+    {
+        "cpf": "88990011223",
+        "nome": "Camila Almeida",
+        "email": "camila.almeida@gmail.com",
+        "telefone": "8899001122"
+    }
+]

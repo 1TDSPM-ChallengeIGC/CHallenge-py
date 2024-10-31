@@ -21,7 +21,21 @@ class CRUD:
             query += " WHERE nome_clie LIKE :1"
             parametros.append(f"%{nome}%")
         
-        return self.conexao.executar_query(query, parametros)
+        # Executa a consulta e obtém o resultado como uma lista de tuplas
+        resultados = self.conexao.executar_query(query, parametros)
+
+        # Mapeia os resultados para uma lista de dicionários
+        clientes = []
+        for row in resultados:
+            cliente_dict = {
+                "cpf": row[0],         # ajuste o índice conforme a ordem das colunas na tabela
+                "nome": row[1],        # ajuste o índice conforme a ordem das colunas na tabela
+                "email": row[2],       # ajuste o índice conforme a ordem das colunas na tabela
+                "telefone": row[3]     # ajuste o índice conforme a ordem das colunas na tabela
+            }
+            clientes.append(cliente_dict)
+
+        return clientes
 
     def atualizar_cliente(self, cpf_clie, nome=None, email=None, tel=None):
         query = "UPDATE cliente SET nome_clie = :1, email_clie = :2, tel_clie = :3 WHERE cpf_clie = :4"
@@ -38,10 +52,16 @@ class CRUD:
             self.conexao.executar_insert_update_delete(query, [f"%{nome_clie}%"])
             print(f"Clientes com o nome '{nome_clie}' excluídos com sucesso. ❌")
 
-    def exportar_clientes_json(self, file_path="clientes.json"):
-        clientes = self.consultar_clientes()
+    def exportar_clientes_json(self, letra=None, file_path="clientes.json"):
+        # Filtra os clientes que começam com a letra especificada
+        if letra:
+            clientes = self.consultar_clientes(nome=letra)
+        else:
+            # Se não for especificada uma letra, retorna todos os clientes
+            clientes = self.consultar_clientes()
+        
         with open(file_path, 'w') as f:
-            json.dump(clientes, f)
+            json.dump(clientes, f, ensure_ascii=False, indent=4)
         print(f"Dados exportados com sucesso para {file_path}. 📥")
 
     def validar_nome(self, nome):

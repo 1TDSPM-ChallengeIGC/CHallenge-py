@@ -138,7 +138,7 @@ class SistemaGerenciamento:
             else:
                 print("Nenhum cliente encontrado com o nome informado. 😞")
         elif opcao == "3":
-            letra = input("Digite a letra : ")
+            letra = input("Digite a letra: ")
             clientes = self.crud.consultar_clientes(nome=letra)
             if clientes:
                 self.salvar_json(clientes, f"clientes_com_letra_{letra}.json")

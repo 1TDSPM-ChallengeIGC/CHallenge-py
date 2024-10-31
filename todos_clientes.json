@@ -1,0 +1,134 @@
+[
+    {
+        "cpf": "12345678901",
+        "nome": "João Silva",
+        "email": "joao@gmail.com",
+        "telefone": "123456789"
+    },
+    {
+        "cpf": "23456789012",
+        "nome": "Maria Souza",
+        "email": "maria@gmail.com",
+        "telefone": "234567890"
+    },
+    {
+        "cpf": "34567890123",
+        "nome": "Pedro Santos",
+        "email": "pedro@gmail.com",
+        "telefone": "345678901"
+    },
+    {
+        "cpf": "45678901234",
+        "nome": "Ana Costa",
+        "email": "ana@gmail.com",
+        "telefone": "456789012"
+    },
+    {
+        "cpf": "56789012345",
+        "nome": "Carlos Oliveira",
+        "email": "carlos@gmail.com",
+        "telefone": "567890123"
+    },
+    {
+        "cpf": "67890123456",
+        "nome": "Paula Almeida",
+        "email": "paula@gmail.com",
+        "telefone": "678901234"
+    },
+    {
+        "cpf": "78901234567",
+        "nome": "Rafael Lima",
+        "email": "rafael@gmail.com",
+        "telefone": "789012345"
+    },
+    {
+        "cpf": "89012345678",
+        "nome": "Camila Ferreira",
+        "email": "camila@gmail.com",
+        "telefone": "890123456"
+    },
+    {
+        "cpf": "90123456789",
+        "nome": "Bruno Pereira",
+        "email": "bruno@gmail.com",
+        "telefone": "901234567"
+    },
+    {
+        "cpf": "01234567890",
+        "nome": "Juliana Mendes",
+        "email": "juliana@gmail.com",
+        "telefone": "012345678"
+    },
+    {
+        "cpf": "11223344556",
+        "nome": "Ricardo Almeida",
+        "email": "ricardo.almeida@gmail.com",
+        "telefone": "1122334455"
+    },
+    {
+        "cpf": "22334455667",
+        "nome": "Sofia Santos",
+        "email": "sofia.santos@gmail.com",
+        "telefone": "2233445566"
+    },
+    {
+        "cpf": "33445566778",
+        "nome": "Felipe Lima",
+        "email": "felipe.lima@gmail.com",
+        "telefone": "3344556677"
+    },
+    {
+        "cpf": "44556677889",
+        "nome": "Tatiane Costa",
+        "email": "tatiane.costa@gmail.com",
+        "telefone": "4455667788"
+    },
+    {
+        "cpf": "55667788990",
+        "nome": "Marcos Ferreira",
+        "email": "marcos.ferreira@gmail.com",
+        "telefone": "5566778899"
+    },
+    {
+        "cpf": "66778899001",
+        "nome": "Jessica Martins",
+        "email": "jessica.martins@gmail.com",
+        "telefone": "6677889900"
+    },
+    {
+        "cpf": "77889900112",
+        "nome": "Thiago Rocha",
+        "email": "thiago.rocha@gmail.com",
+        "telefone": "7788990011"
+    },
+    {
+        "cpf": "88990011223",
+        "nome": "Camila Almeida",
+        "email": "camila.almeida@gmail.com",
+        "telefone": "8899001122"
+    },
+    {
+        "cpf": "99001122334",
+        "nome": "Rafael Santos",
+        "email": "rafael.santos@gmail.com",
+        "telefone": "9900112233"
+    },
+    {
+        "cpf": "10111213141",
+        "nome": "Lucas Oliveira",
+        "email": "lucas.oliveira@gmail.com",
+        "telefone": "1011121314"
+    },
+    {
+        "cpf": "34534534534",
+        "nome": "Giselle",
+        "email": "giselle@gmail.com",
+        "telefone": "11989898989"
+    },
+    {
+        "cpf": "12345671111",
+        "nome": "Paulinha",
+        "email": "paulinha@gmail.com",
+        "telefone": "1212121212"
+    }
+]
