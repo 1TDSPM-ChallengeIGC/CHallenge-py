@@ -14,7 +14,7 @@ class SistemaGerenciamento:
             print("2. Consultar Clientes")
             print("3. Atualizar Cliente")
             print("4. Excluir Cliente")
-            print("5. Exportar Clientes")
+            print("5. Exportar Json Clientes")
             print("6. Consultar Usuários da API Externa")
             print("7. Sair")
 
@@ -56,7 +56,6 @@ class SistemaGerenciamento:
         tel = self.validar_entrada("Telefone: ", self.crud.validar_telefone)
 
         self.crud.inserir_cliente(nome, cpf, email, tel)
-        print("Cliente cadastrado com sucesso! 🎉")
 
     def consultar_clientes(self):
         print("\nComo você deseja consultar os clientes? 🤔")

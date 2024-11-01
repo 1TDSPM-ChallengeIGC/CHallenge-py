@@ -1,48 +1,40 @@
-import json
 import oracledb
-import os
+import json
 
 class ConexaoDB:
-    def __init__(self, config_file=None):
-        try:
-            if not config_file:
-                base_dir = os.path.dirname(__file__)
-                config_file = os.path.join(base_dir, "oracle_conn.json")
-            if not os.path.exists(config_file):
-                raise FileNotFoundError(f"Erro: Arquivo '{config_file}' não encontrado.")
-           
-            with open(config_file, 'r') as f:
-                config_list = json.load(f)
-            config = config_list[0]
+    def __init__(self):
+        self.conexao = None
+        self.carregar_configuracoes()
+
+    def carregar_configuracoes(self):
+        with open('config.json') as f:
+            config = json.load(f)
+            self.host = config['host']
+            self.port = config['port']
             self.user = config['user']
             self.password = config['password']
-            self.dsn = config['dsn']
-            self.connection_string = self.dsn
-            self.connection = None
-        except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
-            print(f"Erro ao carregar configurações: {e}")
-            raise
- 
-    def connect(self):
+            self.service_name = config['service_name']
+
+    def conectar(self):
         try:
-            self.connection = oracledb.connect(user=self.user, password=self.password, dsn=self.connection_string)
-            print("Conexão estabelecida com sucesso! Vamos começar.")
+            dsn = f"{self.host}:{self.port}/{self.service_name}"
+            self.conexao = oracledb.connect(user=self.user, password=self.password, dsn=dsn)
+            print("Conexão com o banco de dados estabelecida com sucesso.")
         except oracledb.DatabaseError as e:
             print(f"Erro ao conectar ao banco de dados: {e}")
-            raise
- 
-    def close(self):
-        if self.connection:
-            self.connection.close()
-            print("Conexão encerrada. Até a próxima!")
- 
-    def executar_query(self, query, parametros=None):
-        with self.connection.cursor() as cursor:
-            cursor.execute(query, parametros or [])
-            resultados = cursor.fetchall()
-            return resultados
- 
-    def executar_insert_update_delete(self, query, parametros=None):
-        with self.connection.cursor() as cursor:
-            cursor.execute(query, parametros or [])
-            self.connection.commit()
+
+    def fechar_conexao(self):
+        if self.conexao:
+            self.conexao.close()
+            print("Conexão fechada.")
+
+    def executar_insert_update_delete(self, query, parametros):
+        cursor = self.conexao.cursor()
+        try:
+            cursor.execute(query, parametros)
+            self.conexao.commit()
+        except oracledb.DatabaseError as e:
+            print(f"Erro ao executar a operação: {e}")
+            self.conexao.rollback()
+        finally:
+            cursor.close()

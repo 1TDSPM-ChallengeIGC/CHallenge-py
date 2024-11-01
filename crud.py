@@ -6,6 +6,11 @@ class CRUD:
         self.conexao = conexao
 
     def inserir_cliente(self, nome, cpf, email, tel):
+        self.validar_nome(nome)
+        self.validar_cpf(cpf)
+        self.validar_email(email)
+        self.validar_telefone(tel)
+
         query = "INSERT INTO cliente (cpf_clie, nome_clie, email_clie, tel_clie) VALUES (:1, :2, :3, :4)"
         self.conexao.executar_insert_update_delete(query, [cpf, nome, email, tel])
         print(f"Cliente '{nome}' inserido com sucesso! 🎉")
@@ -38,8 +43,30 @@ class CRUD:
         return clientes
 
     def atualizar_cliente(self, cpf_clie, nome=None, email=None, tel=None):
-        query = "UPDATE cliente SET nome_clie = :1, email_clie = :2, tel_clie = :3 WHERE cpf_clie = :4"
-        self.conexao.executar_insert_update_delete(query, [nome, email, tel, cpf_clie])
+        # Cria um dicionário para armazenar os dados a serem atualizados
+        novos_dados = {}
+        
+        if nome:
+            self.validar_nome(nome)
+            novos_dados['nome_clie'] = nome
+        if email:
+            self.validar_email(email)
+            novos_dados['email_clie'] = email
+        if tel:
+            self.validar_telefone(tel)
+            novos_dados['tel_clie'] = tel
+
+        if not novos_dados:
+            print("Nenhum dado foi alterado.")
+            return
+
+        # Cria a consulta SQL dinamicamente
+        set_clause = ', '.join(f"{key} = :{key}" for key in novos_dados.keys())
+        query = f"UPDATE cliente SET {set_clause} WHERE cpf_clie = :cpf"
+        
+        # Adiciona o CPF aos parâmetros
+        novos_dados['cpf'] = cpf_clie
+        self.conexao.executar_insert_update_delete(query, novos_dados)
         print(f"Cliente com CPF '{cpf_clie}' atualizado com sucesso! 👍")
 
     def excluir_cliente(self, cpf_clie=None, nome_clie=None):
