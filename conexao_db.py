@@ -8,7 +8,6 @@ class ConexaoDB:
         self.conexao = None  
 
     def carregar_configuracoes(self):
-        # Get the directory of the current script
         dir_path = os.path.dirname(os.path.realpath(__file__))
         config_path = os.path.join(dir_path, 'config.json')
 

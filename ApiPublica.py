@@ -1,5 +1,4 @@
 
-
 import requests
 
 class ApiPublica:
