@@ -1,5 +1,6 @@
 import json
-import oracledb  
+import oracledb
+import os
 
 class ConexaoDB:
     def __init__(self):
@@ -7,13 +8,16 @@ class ConexaoDB:
         self.conexao = None  
 
     def carregar_configuracoes(self):
-        with open('config.json', 'r', encoding='utf-8') as file:
+        # Get the directory of the current script
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        config_path = os.path.join(dir_path, 'config.json')
+
+        with open(config_path, 'r', encoding='utf-8') as file:
             config = json.load(file)
             self.user = config.get('user')
             self.password = config.get('password')
             self.dsn = config.get('dsn')
 
-            
             if not all([self.user, self.password, self.dsn]):
                 raise ValueError("Configurações de conexão incompletas.")
 
