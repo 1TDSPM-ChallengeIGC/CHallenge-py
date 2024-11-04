@@ -19,24 +19,27 @@ class SistemaGerenciamento:
             print("7. Sair")
 
             opcao = input("Escolha uma opção: ")
+            self.processar_opcao(opcao)
 
-            if opcao == "1":
-                self.inserir_cliente()
-            elif opcao == "2":
-                self.consultar_clientes()
-            elif opcao == "3":
-                self.atualizar_cliente()
-            elif opcao == "4":
-                self.excluir_cliente()
-            elif opcao == "5":
-                self.exportar_clientes()
-            elif opcao == "6":
-                self.consultar_usuarios_api()
-            elif opcao == "7":
-                self.conexao.close()
-                break
-            else:
-                print("Opção inválida. Por favor, escolha novamente.")
+    def processar_opcao(self, opcao):
+        if opcao == "1":
+            self.inserir_cliente()
+        elif opcao == "2":
+            self.consultar_clientes()
+        elif opcao == "3":
+            self.atualizar_cliente()
+        elif opcao == "4":
+            self.excluir_cliente()
+        elif opcao == "5":
+            self.exportar_clientes()
+        elif opcao == "6":
+            self.consultar_usuarios_api()
+        elif opcao == "7":
+            self.conexao.close()
+            print("Sistema encerrado. Até logo! 👋")
+            exit()
+        else:
+            print("Opção inválida. Por favor, escolha novamente.")
 
     def validar_entrada(self, prompt, validacao_funcao):
         while True:
@@ -45,8 +48,8 @@ class SistemaGerenciamento:
                 if validacao_funcao(entrada):
                     return entrada
             except ValueError as e:
-                print(e)  
-                print("Por favor, tente novamente.")  
+                print(e)
+                print("Por favor, tente novamente.")
 
     def inserir_cliente(self):
         print("\nVamos cadastrar um novo cliente! 📝")
@@ -73,16 +76,19 @@ class SistemaGerenciamento:
         else:
             clientes = self.crud.consultar_clientes()
 
+        self.exibir_clientes(clientes)
+
+    def exibir_clientes(self, clientes):
         if clientes:
             print("\nClientes encontrados: 📋")
-            print("=" * 40)  
+            print("=" * 40)
             for cliente in clientes:
                 print(f"Nome: {cliente['nome']}")
                 print(f"CPF: {cliente['cpf']}")
                 print(f"Email: {cliente['email']}")
                 print(f"Telefone: {cliente['telefone']}")
-                print("-" * 40)  
-            print("=" * 40)  
+                print("-" * 40)
+            print("=" * 40)
         else:
             print("Nenhum cliente encontrado com os critérios informados. 😞")
 
@@ -110,16 +116,19 @@ class SistemaGerenciamento:
         elif opcao == "2":
             nome_clie = input("Digite o Nome do cliente a excluir: ")
             clientes = self.crud.consultar_clientes(nome=nome_clie)
-            if clientes:
-                for cliente in clientes:
-                    confirmacao = input(f"Tem certeza que deseja excluir o cliente {cliente['nome']} (CPF: {cliente['cpf']})? (s/n) ")
-                    if confirmacao.lower() == 's':
-                        self.crud.excluir_cliente(cliente['cpf'])
-                        print("Cliente excluído com sucesso! ❌")
-            else:
-                print("Nenhum cliente encontrado com o nome informado. 😞")
+            self.excluir_clientes_lista(clientes)
         else:
             print("Opção inválida. Por favor, escolha novamente.")
+
+    def excluir_clientes_lista(self, clientes):
+        if clientes:
+            for cliente in clientes:
+                confirmacao = input(f"Tem certeza que deseja excluir o cliente {cliente['nome']} (CPF: {cliente['cpf']})? (s/n) ")
+                if confirmacao.lower() == 's':
+                    self.crud.excluir_cliente(cliente['cpf'])
+                    print("Cliente excluído com sucesso! ❌")
+        else:
+            print("Nenhum cliente encontrado com o nome informado. 😞")
 
     def exportar_clientes(self):
         print("\nComo você deseja exportar os clientes? 📤")
@@ -170,3 +179,4 @@ class SistemaGerenciamento:
     def salvar_json(self, dados, nome_arquivo):
         with open(nome_arquivo, 'w', encoding='utf-8') as f:
             json.dump(dados, f, ensure_ascii=False, indent=4)
+
