@@ -12,7 +12,7 @@ class CRUD:
         self.validar_telefone(tel)
 
         query = "INSERT INTO cliente (cpf_clie, nome_clie, email_clie, tel_clie) VALUES (:1, :2, :3, :4)"
-        self.conexao.executar_insert_update_delete(query, [cpf, nome, email, tel])
+        self.conexao.executar_comando(query, [cpf, nome, email, tel])
         print(f"Cliente '{nome}' inserido com sucesso! 🎉")
 
     def consultar_clientes(self, cpf=None, nome=None):
@@ -26,10 +26,8 @@ class CRUD:
             query += " WHERE nome_clie LIKE :1"
             parametros.append(f"%{nome}%")
         
-        
-        resultados = self.conexao.executar_query(query, parametros)
+        resultados = self.conexao.executar_consulta(query, parametros)
 
-        
         clientes = []
         for row in resultados:
             cliente_dict = {
@@ -43,7 +41,6 @@ class CRUD:
         return clientes
 
     def atualizar_cliente(self, cpf_clie, nome=None, email=None, tel=None):
-        
         novos_dados = {}
         
         if nome:
@@ -60,34 +57,30 @@ class CRUD:
             print("Nenhum dado foi alterado.")
             return
 
-        
         set_clause = ', '.join(f"{key} = :{key}" for key in novos_dados.keys())
         query = f"UPDATE cliente SET {set_clause} WHERE cpf_clie = :cpf"
         
-        
         novos_dados['cpf'] = cpf_clie
-        self.conexao.executar_insert_update_delete(query, novos_dados)
+        self.conexao.executar_comando(query, novos_dados)
         print(f"Cliente com CPF '{cpf_clie}' atualizado com sucesso! 👍")
 
     def excluir_cliente(self, cpf_clie=None, nome_clie=None):
         if cpf_clie:
             query = "DELETE FROM cliente WHERE cpf_clie = :1"
-            self.conexao.executar_insert_update_delete(query, [cpf_clie])
+            self.conexao.executar_comando(query, [cpf_clie])
             print(f"Cliente com CPF '{cpf_clie}' excluído com sucesso. ❌")
         elif nome_clie:
             query = "DELETE FROM cliente WHERE nome_clie LIKE :1"
-            self.conexao.executar_insert_update_delete(query, [f"%{nome_clie}%"])
+            self.conexao.executar_comando(query, [f"%{nome_clie}%"])
             print(f"Clientes com o nome '{nome_clie}' excluídos com sucesso. ❌")
 
     def exportar_clientes_json(self, letra=None, file_path="clientes.json"):
-        
         if letra:
             clientes = self.consultar_clientes(nome=letra)
         else:
-            
             clientes = self.consultar_clientes()
         
-        with open(file_path, 'w') as f:
+        with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(clientes, f, ensure_ascii=False, indent=4)
         print(f"Dados exportados com sucesso para {file_path}. 📥")
 
