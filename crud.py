@@ -26,24 +26,24 @@ class CRUD:
             query += " WHERE nome_clie LIKE :1"
             parametros.append(f"%{nome}%")
         
-        # Executa a consulta e obtém o resultado como uma lista de tuplas
+        
         resultados = self.conexao.executar_query(query, parametros)
 
-        # Mapeia os resultados para uma lista de dicionários
+        
         clientes = []
         for row in resultados:
             cliente_dict = {
-                "cpf": row[0],         # ajuste o índice conforme a ordem das colunas na tabela
-                "nome": row[1],        # ajuste o índice conforme a ordem das colunas na tabela
-                "email": row[2],       # ajuste o índice conforme a ordem das colunas na tabela
-                "telefone": row[3]     # ajuste o índice conforme a ordem das colunas na tabela
+                "cpf": row[0],         
+                "nome": row[1],        
+                "email": row[2],       
+                "telefone": row[3]     
             }
             clientes.append(cliente_dict)
 
         return clientes
 
     def atualizar_cliente(self, cpf_clie, nome=None, email=None, tel=None):
-        # Cria um dicionário para armazenar os dados a serem atualizados
+        
         novos_dados = {}
         
         if nome:
@@ -60,11 +60,11 @@ class CRUD:
             print("Nenhum dado foi alterado.")
             return
 
-        # Cria a consulta SQL dinamicamente
+        
         set_clause = ', '.join(f"{key} = :{key}" for key in novos_dados.keys())
         query = f"UPDATE cliente SET {set_clause} WHERE cpf_clie = :cpf"
         
-        # Adiciona o CPF aos parâmetros
+        
         novos_dados['cpf'] = cpf_clie
         self.conexao.executar_insert_update_delete(query, novos_dados)
         print(f"Cliente com CPF '{cpf_clie}' atualizado com sucesso! 👍")
@@ -80,11 +80,11 @@ class CRUD:
             print(f"Clientes com o nome '{nome_clie}' excluídos com sucesso. ❌")
 
     def exportar_clientes_json(self, letra=None, file_path="clientes.json"):
-        # Filtra os clientes que começam com a letra especificada
+        
         if letra:
             clientes = self.consultar_clientes(nome=letra)
         else:
-            # Se não for especificada uma letra, retorna todos os clientes
+            
             clientes = self.consultar_clientes()
         
         with open(file_path, 'w') as f:

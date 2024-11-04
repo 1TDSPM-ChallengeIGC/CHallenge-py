@@ -1,4 +1,4 @@
-# api_publica.py
+
 
 import requests
 
@@ -9,7 +9,7 @@ class ApiPublica:
     def obter_usuarios(self):
         response = requests.get(self.url)
         if response.status_code == 200:
-            return response.json()  # Retorna a lista de usuários
+            return response.json()  
         else:
             print("Erro ao acessar a API:", response.status_code)
             return None
